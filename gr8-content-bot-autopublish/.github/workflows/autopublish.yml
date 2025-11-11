@@ -1,16 +1,9 @@
 name: Autopublish
 
 on:
-  workflow_dispatch:        # <-- enables the "Run workflow" button
+  workflow_dispatch:        # Enables manual run button
   schedule:
-    - cron: "30 21 * * *"   # runs nightly ~03:00 IST
-
-name: Nightly Content Upgrade
-
-on:
-  schedule:
-    - cron: "30 21 * * *" # Runs at 03:00 IST (21:30 UTC)
-  workflow_dispatch: # Allows manual triggering
+    - cron: "30 21 * * *"   # Runs nightly ~03:00 IST
 
 jobs:
   upgrade-content:
@@ -37,10 +30,10 @@ jobs:
           WP_APP_PASSWORD: ${{ secrets.WP_APP_PASSWORD }}
           LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
           MODEL_NAME: ${{ secrets.MODEL_NAME }}
-          MAX_POSTS_PER_RUN: 5
-          DRY_RUN: false
+          MAX_POSTS_PER_RUN: ${{ secrets.MAX_POSTS_PER_RUN }}
+          DRY_RUN: ${{ secrets.DRY_RUN }}
         run: |
-          python gr8_content_bot/main.py upgrade --limit 5 > upgrade.log 2>&1
+          python gr8_content_bot/pipeline.py upgrade --limit ${MAX_POSTS_PER_RUN:-5}
 
       - name: Upload logs as artifact
         uses: actions/upload-artifact@v3
