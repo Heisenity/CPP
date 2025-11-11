@@ -1,3 +1,10 @@
+name: Autopublish
+
+on:
+  workflow_dispatch:        # <-- enables the "Run workflow" button
+  schedule:
+    - cron: "30 21 * * *"   # runs nightly ~03:00 IST
+
 name: Nightly Content Upgrade
 
 on:
